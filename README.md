@@ -53,6 +53,111 @@ Each package has its own `package.json` (pnpm, `--ignore-workspace`).
 
 ---
 
+## Platform architecture
+
+High-level view of how the Envelope stack fits together on **Celo Sepolia**. Secrets never leave the client; the indexer only sees public commitments and posts Merkle roots.
+
+```mermaid
+flowchart TB
+  subgraph Users["Users"]
+    W["Browser wallet<br/>MetaMask · Rabby · WalletConnect"]
+  end
+
+  subgraph Frontend["client · Next.js :3000"]
+    UI["Dashboard UI<br/>create · transfer · redeem"]
+    LS["localStorage notes<br/>redsand.payments.v1"]
+    SDK["sdk<br/>Poseidon notes · Merkle · Groth16"]
+    UI --- LS
+    UI --- SDK
+  end
+
+  subgraph Offchain["Off-chain services"]
+    BE["backend · :4020<br/>auth · payments metadata"]
+    IDX["indexer · :4010<br/>deposit watcher · Poseidon tree · witnesses"]
+    PG[("PostgreSQL<br/>backend schema + indexer tables")]
+    BE --- PG
+    IDX --- PG
+  end
+
+  subgraph ZK["zk · Circom"]
+    CIR["withdraw.circom"]
+    KEYS["zkey · wasm · verifier"]
+    CIR --> KEYS
+  end
+
+  subgraph Celo["Celo Sepolia · chainId 11142220"]
+    TOK["Mock ERC-20<br/>USDC · USDT · DAI"]
+    V["Vault UUPS"]
+    NFT["PaymentNFT UUPS"]
+    MRM["MerkleRootManager"]
+    FEE["FeeManager"]
+    TR["Treasury"]
+    ADM["AdminController"]
+    VER["DepositVerifier / WithdrawVerifier"]
+    TOK --> V
+    V --> NFT
+    V --> FEE
+    FEE --> TR
+    V --> VER
+    MRM --> V
+    ADM --> V
+    ADM --> FEE
+    ADM --> NFT
+  end
+
+  W <-->|sign txs| UI
+  UI -->|REST| BE
+  UI -->|witness / status| IDX
+  SDK -.->|build artifacts| KEYS
+  IDX -->|RPC watch Deposit| V
+  IDX -->|postRoot| MRM
+  W -->|approve + depositTo| V
+  W -->|transferFrom| NFT
+  W -->|setRedemptionProof + redeem| NFT
+  NFT --> V
+  V -->|ERC-20 payout − fee| W
+```
+
+### Payment lifecycle
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor User
+  participant Client
+  participant Vault
+  participant NFT as PaymentNFT
+  participant Indexer
+  participant MRM as MerkleRootManager
+
+  User->>Client: Create payment note secret
+  Client->>Vault: approve + depositTo commitment,token,amount
+  Vault->>NFT: mint claim ticket
+  Note over Client: secret stays in localStorage
+  Indexer->>Vault: watch Deposit event
+  Indexer->>Indexer: insert Poseidon leaf
+  Indexer->>MRM: postRoot
+  opt Transfer
+    User->>NFT: transfer to recipient
+  end
+  Client->>Indexer: fetch Merkle witness
+  Client->>Client: prove withdraw Groth16
+  Client->>NFT: setRedemptionProof
+  Client->>Vault: redeem depositId
+  Vault->>User: ERC-20 payout − fee
+  Vault->>NFT: burn
+```
+
+| Layer | Components | Trust notes |
+|-------|------------|-------------|
+| Wallet / client | Wagmi, note secrets, SDK proofs | Secrets never sent to backend/indexer |
+| Backend | JWT auth, payment list, encrypted note blobs | Metadata only — not required for redeem |
+| Indexer | Event sync, Poseidon tree, `postRoot`, witness API | Relayer must own `MerkleRootManager` |
+| Contracts | Vault, PaymentNFT, roots, fees, admin | Cleartext ERC-20 lock; privacy via NFT + ZK nullifier |
+| ZK | Circom withdraw + exported verifier | Deposit needs no circuit |
+
+---
+
 ## How it works
 
 ### On-chain
