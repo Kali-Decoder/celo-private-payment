@@ -1,0 +1,36 @@
+{
+  "network": "celoSepolia",
+  "chainId": 11142220,
+  "deployer": "0xdAF0182De86F904918Db8d07c7340A1EfcDF8244",
+  "contracts": {
+    "DepositVerifier": "0x5E6658ac6cBC9b0109C28BED00bC4Af0F0A3f1CD",
+    "MerkleRootManager": "0x90Dfd581393104EAe03Fd349b4867A7E8F51313b",
+    "Vault": "0x71d91e48b88DaEb94A6E14c34e791150a994BA5F",
+    "PaymentNFT": "0x82CF8d42205f0bdC6A5d3Efcd2b9ca84B3E548AB",
+    "FeeManager": "0xd58e18EBdae2C207A41FDF63abDcdeb928beAa98",
+    "Treasury": "0x27603a61d2eCD51940558EC4eD3bd182C13485E7",
+    "AdminController": "0x027358685B192d707cbD87c9bb3a08bc7dC04Ac9",
+    "MockUSDC": "0xddf223827D0c769CA06Bc2837dBa86d5677A50e5"
+  },
+  "tokens": [
+    {
+      "address": "0xddf223827D0c769CA06Bc2837dBa86d5677A50e5",
+      "symbol": "USDC",
+      "decimals": 6,
+      "enabled": true
+    },
+    {
+      "address": "0x0c885d338123149493E16cFAd53969bC06B49722",
+      "symbol": "USDT",
+      "decimals": 6,
+      "enabled": true
+    },
+    {
+      "address": "0xcaF280fd3Aa61152B0455aA43f0B43149881eb93",
+      "symbol": "DAI",
+      "decimals": 18,
+      "enabled": true
+    }
+  ],
+  "updatedAt": "2026-10-17T14:56:57.846Z"
+}
