@@ -166,8 +166,7 @@ pnpm install --ignore-workspace
 cp .env.example .env
 # NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID from https://cloud.reown.com
 
-# Copy addresses from ../hardhat-contracts/deployments/celoSepolia.json
-# into src/lib/contracts.ts (Vault, PaymentNFT, MerkleRootManager, USDC/USDT/DAI)
+# Addresses live in src/lib/contracts.ts (synced from deployments/celoSepolia.json)
 
 pnpm sdk:build
 pnpm dev                     # http://localhost:3000
@@ -300,11 +299,11 @@ Contract addresses are **not** env vars — edit `client/src/lib/contracts.ts` a
 
 ## Deploy checklist
 
-1. [ ] Deploy contracts on Celo Sepolia (`pnpm --dir hardhat-contracts deploy`)
+1. [x] Deploy contracts on Celo Sepolia (`pnpm --dir hardhat-contracts deploy`)
 2. [ ] Fund deployer + test wallets with CELO
-3. [ ] Mint / enable tokens (`mint:all` or `TOKEN_ADDRESS=… deploy:token`)
-4. [ ] Point indexer `.env` at deployment addresses + Celo RPC
-5. [ ] Point `client/src/lib/contracts.ts` at the same addresses
+3. [x] Mint / enable tokens (Mock USDC/USDT/DAI from `deploy-all`)
+4. [x] Point indexer `.env.example` at deployment addresses + Celo RPC
+5. [x] Sync `client/src/lib/contracts.ts` + indexer env from `deployments/celoSepolia.json`
 6. [ ] Run indexer + backend + client
 7. [ ] Smoke: create payment → wait for root → redeem
 8. [ ] (Prod) Build ZK keys, deploy `WithdrawVerifier`, set verifier on Vault
