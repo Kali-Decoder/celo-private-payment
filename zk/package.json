@@ -1,0 +1,18 @@
+{
+  "name": "@redsand/zk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Redsand withdraw circuit (Circom + snarkjs, BN254 Groth16)",
+  "type": "module",
+  "scripts": {
+    "build": "bash scripts/build.sh",
+    "proof": "node scripts/gen-test-proof.mjs",
+    "export:verifier": "node scripts/export-verifier.mjs"
+  },
+  "dependencies": {
+    "snarkjs": "0.7.5"
+  },
+  "devDependencies": {
+    "circomlib": "2.0.5"
+  }
+}

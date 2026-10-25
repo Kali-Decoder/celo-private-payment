@@ -1,0 +1,8 @@
+# Toxic waste / large binaries — do NOT commit
+/artifacts
+/keys
+/proofs
+/inputs
+
+/node_modules
+
