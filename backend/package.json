@@ -1,0 +1,30 @@
+{
+  "name": "@redsand/backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Redsand backend — wallet auth, usernames, notes, dashboard (Celo Sepolia)",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node scripts/prisma-env.mjs db push && tsx src/server.ts",
+    "build": "node scripts/prisma-env.mjs generate && tsc -p tsconfig.json",
+    "db:generate": "node scripts/prisma-env.mjs generate",
+    "db:push": "node scripts/prisma-env.mjs db push",
+    "db:studio": "prisma studio",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "@privy-io/node": "^0.27.0",
+    "dotenv": "^16.0.0",
+    "fastify": "^5.2.1",
+    "jose": "^6.0.10",
+    "prisma": "^6.5.0",
+    "tsx": "^4.19.4",
+    "viem": "^2.26.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "typescript": "5.8.3"
+  }
+}
