@@ -1,0 +1,28 @@
+{
+  "name": "@redsand/indexer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Redsand deposit indexer — Poseidon Merkle tree + root poster + witness API",
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "prepare:sdk": "pnpm --dir ../sdk install --ignore-workspace --no-frozen-lockfile && pnpm --dir ../sdk build",
+    "build": "pnpm run prepare:sdk && tsc -p tsconfig.json",
+    "dev": "tsx watch src/main.ts",
+    "start": "node dist/main.js",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test src/**/*.test.ts"
+  },
+  "dependencies": {
+    "@redsand/sdk": "link:../sdk",
+    "@types/node": "^22.15.21",
+    "@types/pg": "^8.15.4",
+    "dotenv": "^16.0.0",
+    "fastify": "^5.2.1",
+    "pg": "^8.16.0",
+    "tsx": "^4.19.4",
+    "typescript": "5.8.3",
+    "viem": "^2.26.3"
+  }
+}
